@@ -15,29 +15,24 @@ void swapperFunc(int *, int *);
 void bubble_sort(int *array, size_t size)
 {
 	size_t i = 0;
+	short proc = 0;
 
 	if (array == NULL || size < 2)
 		exit(EXIT_FAILURE);
 
-	for (; i < (size - 1); i++)
-	{
-		size_t j = 0;
-		bool unlock = false;
+	do {
+		proc = 0;
 
-		for (j = 0; j < (size - i - 1); j++)
+		for (i = 0; i < (size -  1); i++)
 		{
-		if (array[j] > array[j + 1])
+		if (array[i] > array[i + 1])
 		{
-		swapperFunc(&array[j], &array[j + 1]);
-		unlock = true;
+		swapperFunc(array + i, array + i + 1);
+		print_array(array, size);
+		proc++;
 		}
 		}
-
-		if (unlock == false)
-			break;
-
-	print_array(array, size);
-	}
+	} while (proc > 0);
 }
 
 /**
