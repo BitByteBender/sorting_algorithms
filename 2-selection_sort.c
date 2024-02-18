@@ -1,4 +1,5 @@
 #include "sort.h"
+#include <stdlib.h>
 /**
  * selection_sort - sorts an array of integers in ASC
  * @array: pointer to an array of ints
@@ -15,6 +16,7 @@ void selection_sort(int *array, size_t size)
 	while (i < (size - 1))
 	{
 		size_t minIdx = i;
+		int *tempVal = (int *)malloc(sizeof(int));
 
 		j = (i + 1);
 
@@ -28,10 +30,10 @@ void selection_sort(int *array, size_t size)
 
 		if (!(minIdx == i))
 		{
-		short tempVal = array[i];
+		*tempVal = array[i];
 
 		array[i] = array[minIdx];
-		array[minIdx] = tempVal;
+		array[minIdx] = *tempVal;
 		}
 
 		print_array(array, size);
