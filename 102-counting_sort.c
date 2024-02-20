@@ -1,4 +1,8 @@
 #include "sort.h"
+#include <limits.h>
+#include <stdio.h>
+void freeAlloc(int *, int *);
+int *count(int *, int, size_t);
 /**
  * counting_sort - sorts array of ints in asc
  * @array: pointer to arrays of ints
@@ -7,14 +11,11 @@
  */
 void counting_sort(int *array, size_t size)
 {
-	int maxInt = 0, *counter = NULL;
+	int maxInt = 0, *counter, *confirmSorting = NULL;
 	size_t i = 0, arrIdx = 0;
 
 	if (array == NULL || size < 2)
 		exit(EXIT_FAILURE);
-
-	maxInt = array[0];
-	i = 1;
 
 	while (i < size)
 	{
@@ -24,26 +25,69 @@ void counting_sort(int *array, size_t size)
 	i++;
 	}
 
+	confirmSorting = (int *)malloc(sizeof(int) * size);
+	if (confirmSorting == NULL)
+	{
+	free(confirmSorting);
+	exit(EXIT_FAILURE);
+	}
+
+	counter = count(array, maxInt, size);
+	print_array(counter, (maxInt + 1));
+
+	for (i = 0; i < size; i++)
+	{
+		arrIdx = counter[array[i]];
+
+		confirmSorting[arrIdx - 1] = array[i];
+		arrIdx--;
+	}
+
+	for (i = 0; i < size; i++)
+		array[i] = confirmSorting[i];
+
+	freeAlloc(confirmSorting, counter);
+}
+/**
+ * count - count the occurences of ea element in an int array
+ * @arr: pointer to an array of ints
+ * @maxInt: max int value in an array
+ * @size: size of the array
+ * Return: array of counts of ea element
+ */
+int *count(int *arr, int maxInt, size_t size)
+{
+	int *counter = NULL;
+	size_t i = 0;
+
 	counter = (int *)malloc(sizeof(int) * (maxInt + 1));
 	if (counter == NULL)
-		exit(EXIT_FAILURE);
+	{
+	free(counter);
+	exit(EXIT_FAILURE);
+	}
 
-	for (i = 0; i <= (size_t)maxInt; i++)
+	for (i = 0; i < (size_t)(maxInt + 1); i++)
 		counter[i] = 0;
 
 	for (i = 0; i < size; i++)
-		counter[array[i]]++;
+		counter[arr[i]]++;
 
-	print_array(counter, (maxInt + 1));
+	for (i = 0; i < (size_t)(maxInt + 1); i++)
+		counter[i] += counter[i - 1];
 
-	for (i = 0; i <= (size_t)maxInt; i++)
-	{
-		while (counter[i] > 0)
-		{
-		array[arrIdx++] = i;
-		counter[i]--;
-		}
-	}
+	return (counter);
+}
+/**
+ * freeAlloc - frees allocated memory of two ints
+ * @first: pointer to the first int array
+ * @second: pointer to the second int array
+ */
+void freeAlloc(int *first, int *second)
+{
+	if (first != NULL)
+		free(first);
 
-	free(counter);
+	if (second != NULL)
+		free(second);
 }
